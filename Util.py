@@ -1,34 +1,35 @@
-import os
-import platform
-import time
-import Point
-import ConstParam as cc
+import pygame
+import ConstParam as cp
 
-def clrscr():
-    if platform.system() == 'Windows' :
-        os.system("cls")
-    elif platform.system() == 'Linux' :
-        os.system("clear")
-
-def gotoxy(*args):
-    if type(args[0]) == Point.Point :
-        x = args[0].x
-        y = args[0].y
-    elif len(args) == 2 :
-        x = args[0]
-        y = args[1]
-    else :
+def drawxy(**kwargs) :
+    if kwargs.__contains__("Point") :
+        x = kwargs["Point"].x
+        y = kwargs["Point"].y
+    elif kwargs.__contains__("X") and kwargs.__contains__("Y") :
+        x = kwargs["X"]
+        y = kwargs["Y"]
+    else:
         x = 0
         y = 0
-        
-    print ("%c[%d;%df" % (0x1B, y, x * cc.scaleWidth ), end='')
+    
+    if kwargs.__contains__("Width") :
+        width = kwargs["Width"] * cp.pixelWidth
+    else:
+        width = cp.pixelWidth
 
-def delay(second):
-    print ('')
-    #print ("Start : %s" % time.ctime())
-    time.sleep(second)
-    print ('')
-    #print ("End : %s" % time.ctime())
+    if kwargs.__contains__("Height") :
+        height = kwargs["Height"] * cp.pixelHeight
+    else:
+        height = cp.pixelHeight
 
-    # It's is weird that I can't successfully run "sleep"
-    # without printing 'endl'
+    if kwargs.__contains__("Color") :
+        color = kwargs["Color"] 
+    else:
+        color = cp.ColorBlack
+
+    if kwargs.__contains__("Fill") :
+        fill = kwargs["Fill"]
+    else:
+        fill = 0 
+
+    pygame.draw.rect(kwargs["Screen"], color, (x*cp.pixelWidth, y*cp.pixelHeight, width, height), fill)

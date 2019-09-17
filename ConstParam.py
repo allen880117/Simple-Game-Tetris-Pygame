@@ -1,9 +1,11 @@
-cPin = "OO"
-cEmpty = "  "
-cConner = "++"
-cDash = "--"
-cSideEdge = "||"
-cBlocks = "00"
+pixelWidth = 20
+pixelHeight = 20
 
-scaleWidth = 2;
-delayTime = 0.2; #second
+ColorBlack = (0, 0, 0)
+
+FPS = 6
+
+ScreenSize = Width, Height= 12*pixelWidth, 22*pixelHeight
+Title = "Simple Game Tetris By Pygame"
+
+BottomCount = 3

@@ -1,75 +1,70 @@
-import Point
-import Object
-import Rect
-import Board
-import Util
-import ConstParam as cc
+from Point import *
+from Rect import *
 
 class Board():
-    def __init__(self, lt, rb) :
-        self.rect = Rect.Rect(lt, rb)
-        self.pin = []
-        for i in range(0, self.getWidth() * self.getHeight()) :
-            self.pin.append(0);
-
-    def drawPins(self) :
-        for i in range(0, self.getHeight()) :
-            Util.gotoxy(self.rect.LeftTop + Point.Point(0, i))
-            for j in range(0, self.getWidth()) :
-                if(self.pin[i*self.getWidth() + j] == 1) :
-                    print(cc.cPin, end='')
-                else :
-                    print(cc.cEmpty, end='')
+    def __init__(self, LeftTop, Width, Height) :
+        self.rect = Rect(LeftTop = LeftTop, Width = Width, Height = Height)
+        self.pins = []
+        for i in range(0, self.rect.width * self.rect.height) :
+            self.pins.append(0)
     
-    def isPinsTouched(self, obj) :
-        for i in range(0, 4) :
-            offsetFromLT = obj.locate + obj.blocks[i] - self.rect.LeftTop
-            idx = offsetFromLT.y * self.getWidth() + offsetFromLT.x
-            if(self.pin[int(idx)] == 1) :
-                return True
+    def PositionBoardPins(self) :
+        Positions = []
+        for i in range(0, self.rect.height) :
+            for j in range(0, self.rect.width) :
+                if self.pins[i*self.rect.width + j] == 1 :
+                    Positions.append(self.rect.lefttop + Point(j, i))
         
-        return False
+        return Positions
 
-    def setObjectPins(self, obj) :
-        for i in range(0, 4) :
-            offsetFromLT = obj.locate + obj.blocks[i] - self.rect.LeftTop
-            idx = offsetFromLT.y * self.getWidth() + offsetFromLT.x
-            self.pin[int(idx)] = 1
+    def setPinsByBlock(self, obj) :
+        BlockList = obj.PositionBlocks()
+        for Block in BlockList :
+            Block = Block - self.rect.lefttop
+            idx_for_pins = Block.y * self.rect.width + Block.x
+            self.pins[int(idx_for_pins)] = 1
 
-    def lineCheckAndRearrange(self) :
+    def checkLineAndRearrange(self) :
         isFull = []
         downCounter = []
-        for i in range(0, self.getHeight()) :
-            isFull.append(True)
+        for i in range(self.rect.height):
+            isFull.append(False)
             downCounter.append(0)
         
-        for i in range(0, self.getHeight()) :
-            for j in range(0, self.getWidth()) :
-                if(self.pin[i*self.getWidth() + j] == 0) :
-                    isFull[i] = False
+        tempPins = []
+        for i in range(0, self.rect.width * self.rect.height) :
+            tempPins.append(0)
+
+        for i in range(0, self.rect.height) :
+            isLine = True
+            for j in range(0, self.rect.width) :
+                if self.pins[i*self.rect.width + j] == 0 :
+                    isLine = False
                     break
             
-            if(isFull[i]) :
-                for j in range(i-1, 0, -1) :
-                    downCounter[j] = downCounter[j]+1
+            if isLine == True :
+                isFull[i] = True
+                for j in range(0, i) :
+                    downCounter[j] = downCounter[j] + 1
         
-        tempPins = []
-        for i in range(0, self.getWidth() * self.getHeight()) :
-            tempPins.append(0);
+        for i in range(0, self.rect.height) :
+            if isFull[i] == True : continue
+
+            for j in range(0, self.rect.width) :
+                idx_for_orig = i*self.rect.width + j
+                idx_for_temp = (i+downCounter[i]) *self.rect.width + j
+                tempPins[idx_for_temp] = self.pins[idx_for_orig]
+
+        self.pins = tempPins
+
+    def isPinsTouchedByObj(self, obj) : 
+        BlockList = obj.PositionBlocks()
+        isTouched = False
+        for Block in BlockList :
+            Block = Block - self.rect.lefttop
+            idx_for_pins = Block.y * self.rect.width + Block.x
+            if self.pins[int(idx_for_pins)] == 1 :
+                isTouched = True
+                break
         
-        for i in range(0, self.getHeight()) :
-            if (isFull[i] == False) :
-                for j in range(0, self.getWidth()) :
-                    idx = (i+downCounter[i]) * self.getWidth() + j
-                    tempPins[idx] = self.pin[i*self.getWidth() + j]
-
-        self.pin = tempPins
-
-    def getRect(self) :
-        return self.rect
-    
-    def getHeight(self) :
-        return self.rect.height
-    
-    def getWidth(self) :
-        return self.rect.width
+        return isTouched
