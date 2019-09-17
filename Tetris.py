@@ -25,6 +25,12 @@ class Tetris():
         self.BlocksList = []
         self.ShadowBlocksList = []
 
+        # Text
+        self.text = pygame.font.Font(cp.font, 30)
+        self.textSurf = self.text.render('TETRIS', True, (0,0,0), None)
+        self.textRect = self.textSurf.get_rect()
+        self.textRect.center = (cp.Width/2, cp.Height/2)
+
     def shadowMove(self):
         self.shadow.reset(Type = self.block.type, Locate = self.block.locate, Direction = self.block.direction)
         while (self.shadow.move(Point(0, 1), self.mainBoard)) : pass    
@@ -38,7 +44,13 @@ class Tetris():
         self.ShadowBlocksList = self.shadow.PositionBlocks()
         self.BlocksList = self.block.PositionBlocks()
 
+        # DRAW_BACKGROUND
         Util.drawxy(Point = Point(0,0), Screen = self.screen, Width = 12, Height = 22, Color = (255, 255, 255))
+        
+        # DRAW_TEXT
+        self.screen.blit(self.textSurf, self.textRect)
+
+        # DRAW_BLOCKS
         for pos in self.BoundaryList : Util.drawxy(Point = pos, Screen = self.screen, Color = (0, 0, 0))
         for pos in self.PinsList : Util.drawxy(Point = pos, Screen = self.screen, Color = (125, 0, 0))
         for pos in self.ShadowBlocksList : Util.drawxy(Point = pos, Screen = self.screen, Color = (125, 125, 125), Fill = 0)

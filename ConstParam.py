@@ -1,5 +1,5 @@
-pixelWidth = 20
-pixelHeight = 20
+pixelWidth = 35
+pixelHeight = 35
 
 ColorBlack = (0, 0, 0)
 
@@ -9,3 +9,5 @@ ScreenSize = Width, Height= 12*pixelWidth, 22*pixelHeight
 Title = "Simple Game Tetris By Pygame"
 
 BottomCount = 3
+
+font = 'font/Consolas.ttf'
