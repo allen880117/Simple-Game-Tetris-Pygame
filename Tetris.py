@@ -82,7 +82,7 @@ class Tetris():
                     elif event.type == pygame.KEYDOWN :
                         emptyEvent = False
                         if event.key == pygame.K_UP :
-                            self.block.turn(self.mainBoard)
+                            self.block.turn(SpinDirection = "CLOCKWISE", board = self.mainBoard)
                         elif event.key == pygame.K_DOWN :
                             self.block.move(Point(0,1), self.mainBoard)
                         elif event.key == pygame.K_LEFT :

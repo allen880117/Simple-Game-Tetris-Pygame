@@ -1,5 +1,6 @@
 from Point import *
 from BlockType import *
+from KickTable import *
 from Board import *
 
 class Object():
@@ -33,14 +34,29 @@ class Object():
         else :
             return True
 
-    def turn(self, board):
-        self.direction = (self.direction+1)%4
-        self.switchTypeOrRotation()
+    def turn(self, SpinDirection, board):
+        orig_direction = self.direction
+        orig_locate = self.locate
 
-        isLegal = self.isInside(board) == True and board.isPinsTouchedByObj(self) == False
-        if isLegal == False :
+        if SpinDirection == "CLOCKWISE" :
+            self.direction = (self.direction+1)%4
+            self.switchTypeOrRotation()
+        elif SpinDirection == "COUNTERCLOCKWISE" :
             self.direction = (self.direction-1+4)%4
             self.switchTypeOrRotation()
+        
+        TestCounter = 0
+        isLegal = False        
+        while isLegal == False and TestCounter < 5 :
+            self.kick(OriginDirection = orig_direction, SpinDirection = SpinDirection, TestTime = TestCounter)
+            isLegal = self.isInside(board) == True and board.isPinsTouchedByObj(self) == False
+            TestCounter = TestCounter + 1
+
+        if isLegal == False :
+            self.direction = orig_direction
+            self.switchTypeOrRotation()
+
+            self.locate = orig_locate
             return False
         else :
             return True
@@ -64,3 +80,9 @@ class Object():
         else :
             self.move(Point(0, -1), board)
             return True
+
+    def kick(self, OriginDirection, SpinDirection, TestTime):
+        if SpinDirection == "CLOCKWISE" :
+            self.locate = self.locate + KICK_CLOCKWISE[self.type][OriginDirection][TestTime]
+        elif SpinDirection == "COUNTERCLOCKWISE":
+            self.locate = self.locate + KICK_COUNTERCLOCKWISE[self.type][OriginDirection][TestTime]
