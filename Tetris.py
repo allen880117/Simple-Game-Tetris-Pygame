@@ -4,11 +4,11 @@ from Point import *
 from Rect import *
 from Object import *
 from Board import *
+from PauseScreen import *
 import ConstParam as cp
 
 class Tetris():
     def __init__(self):
-        pygame.init()
         self.clock = pygame.time.Clock()
 
         self.screen = pygame.display.set_mode(cp.ScreenSize)
@@ -57,7 +57,7 @@ class Tetris():
         for pos in self.BlocksList : Util.drawxy(Point = pos, Screen = self.screen, Color = (0, 0, 125))
         
         pygame.display.update()
-        
+
     def play(self) :
         main_game_running = True
         while main_game_running:
@@ -78,8 +78,7 @@ class Tetris():
                 
                 for event in pygame.event.get() :
                     if event.type == pygame.QUIT :
-                        main_game_running = False 
-                        break
+                        return 1 # Directly Shut Down
                     elif event.type == pygame.KEYDOWN :
                         emptyEvent = False
                         if event.key == pygame.K_UP :
@@ -94,8 +93,13 @@ class Tetris():
                             while (self.block.move(Point(0, 1), self.mainBoard)) : pass    
                             BottomTouchCounter = cp.BottomCount           
                         elif event.key == pygame.K_ESCAPE :
-                            main_game_running = False
-                            break
+                            # Initial Pause Screen
+                            pauseScreen = PauseScreen(self.screen)
+                            returnValue = pauseScreen.draw()
+                            if returnValue == 1 :
+                                return 1 # Directly Shut Down
+                            # Restore the Screen
+                            self.draw()
                         else:
                             self.block.move(Point(0, 1), self.mainBoard) 
 
@@ -114,6 +118,5 @@ class Tetris():
                     break
 
                 self.draw()
-                
-
-        pygame.quit()
+        
+        return 0

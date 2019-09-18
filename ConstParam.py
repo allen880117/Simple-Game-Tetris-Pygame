@@ -2,6 +2,10 @@ pixelWidth = 35
 pixelHeight = 35
 
 ColorBlack = (0, 0, 0)
+ColorWhite = (255,255,255)
+ColorRed = (255, 0, 0)
+ColorGreen = (0, 255, 0)
+ColorBlue = (0, 0, 255)
 
 FPS = 6
 
