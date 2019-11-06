@@ -20,5 +20,6 @@ def main() :
 
 if __name__ == "__main__":
     pygame.init()
+    pygame.key.set_repeat(100, 1);    
     main() 
     pygame.quit()

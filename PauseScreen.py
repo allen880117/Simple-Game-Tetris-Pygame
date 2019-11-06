@@ -13,8 +13,8 @@ class PauseScreen():
         self.text = pygame.font.Font(cp.font, 30)
         self.textSurf = self.text.render('PAUSE', True, cp.ColorBlack, cp.ColorWhite)
         self.textRect = self.textSurf.get_rect()
-        self.textRect.center = (cp.Width/2, cp.Height/2 + cp.pixelHeight)
-
+        self.textRect.center =  (cp.BoardWidth/2, cp.BoardHeight/2 + cp.pixelHeight)
+        
     def draw(self):
         # DRAW_TEXT
         self.screen.blit(self.textSurf, self.textRect)
